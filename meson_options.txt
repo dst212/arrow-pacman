@@ -1,0 +1,1 @@
+option('server', type: 'boolean', value: false, description: 'Compile as server executable, without the level editor functionality.')

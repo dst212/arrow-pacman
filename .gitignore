@@ -1,0 +1,7 @@
+build
+server
+bin
+rmsubproj.sh
+compile.sh
+subprojects/*
+subprojects/!*.wrap
