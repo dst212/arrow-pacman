@@ -5,3 +5,5 @@ rmsubproj.sh
 compile.sh
 subprojects/*
 subprojects/!*.wrap
+arrow-pacman-data/levels/*
+arrow-pacman-data/levels/!demo
