@@ -4,6 +4,6 @@ bin
 rmsubproj.sh
 compile.sh
 subprojects/*
-subprojects/!*.wrap
+!subprojects/*.wrap
 arrow-pacman-data/levels/*
-arrow-pacman-data/levels/!demo
+!arrow-pacman-data/levels/demo
