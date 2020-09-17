@@ -109,21 +109,22 @@ void startPacMan(void) {
 				refreshBar(w, &pacman);
 				wrefresh(w);
 				msleep(ticks.delay / 2);
-				//eaten ghosts are twice faster
-				for(i = 0; i < pacman.ghosts; i++)
-					if(pacman.ghost[i].flag == GH_EATEN) {
-						printMapCell(w, &pacman, pacman.ghost[i].pos.y, pacman.ghost[i].pos.x);
-						moveGhost(&pacman, i, bitmap[i], &ticks);
-						printGhost(w, &pacman, i);
-					}
-				wrefresh(w);
-				msleep(ticks.delay / 2);
-				ticks.count++;
-				if(ticks.checkpoint != -1 && ticks.count - ticks.checkpoint >= pacman.powerticks)
-					endPowerPoint(&pacman, &ticks);
 				//check game's status
 				switch(gameStatus) {
 					case PACMAN_CONTINUE:
+						//eaten ghosts are twice faster
+						for(i = 0; i < pacman.ghosts; i++) {
+								if(pacman.ghost[i].flag == GH_EATEN) {
+								printMapCell(w, &pacman, pacman.ghost[i].pos.y, pacman.ghost[i].pos.x);
+								moveGhost(&pacman, i, bitmap[i], &ticks);
+								printGhost(w, &pacman, i);
+							}
+						}
+						wrefresh(w);
+						msleep(ticks.delay / 2);
+						ticks.count++;
+						if(ticks.checkpoint != -1 && ticks.count - ticks.checkpoint >= pacman.powerticks)
+							endPowerPoint(&pacman, &ticks);
 						break;
 					case PACMAN_GAMEOVER:
 					case PACMAN_EATEN:
