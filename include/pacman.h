@@ -13,11 +13,11 @@ int pacmanCountDown(WINDOW*w) {
 	for(i = 3; i > 0; i--) {
 		mvwprintw(w, WIN_MIDDLE, WIN_WIDTH - 1, "%1d", i);
 		wrefresh(w);
-		sleep(1);
+		msleep(1000);
 	}
 	mvncprintv(w, WIN_MIDDLE, WIN_WIDTH - 1, "GO\0");
 	wrefresh(w);
-	sleep(1);
+	msleep(1000);
 	#undef WIN_MIDDLE
 	return ncignoreinput(w);
 }
