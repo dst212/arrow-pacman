@@ -1,0 +1,6 @@
+[wrap-git]
+url = https://github.com/dst212/cstuff
+revision = cstuff-1.0
+
+[provide]
+dependency_names = cstuff
