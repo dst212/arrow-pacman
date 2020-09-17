@@ -29,8 +29,8 @@ way_t ghostMoves(coord pos, map_t m[MAP_HEIGHT][MAP_WIDTH]) {
 
 #include "routes.h"
 
-void moveGhost(/*WINDOW*w, */level*l, int8_t i, uint16_t*bitmap, counter*ticks) {
-	way_t r = 0, moves = (l->ghost[i].ticks < ticks->count) ? ghostMoves(l->ghost[i].pos, l->map) : playerMoves(l->ghost[i].pos, l->map);
+void moveGhost(/*WINDOW*w, */level*l, int8_t i, uint16_t*bitmap) {
+	way_t r = 0, moves = (l->ghost[i].ticks < l->ticks) ? ghostMoves(l->ghost[i].pos, l->map) : playerMoves(l->ghost[i].pos, l->map);
 
 	// printMapCell(w, l, l->ghost[i].pos.y, l->ghost[i].pos.x);
 	if(l->ghost[i].flag == GH_EATEN && isSamePos(l->ghost[i].spawn, l->ghost[i].pos))

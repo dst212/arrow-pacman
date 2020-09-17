@@ -6,7 +6,7 @@
 
 //player's sprite functions
 
-extern void beginPowerPoint(level*,counter*);
+extern void beginPowerPoint(level*);
 
 #define PL_MAX_LIVES		7
 #define PL_DEFAULT_LIVES	3
@@ -54,7 +54,7 @@ int8_t playerGotCaught(level*l) {
 	return (i = ghostPos(l, l->player.pos.y, l->player.pos.x)) != -1 ? i : ghostHit(l, l->player.pos.y, l->player.pos.x, l->player.way);
 }
 
-short movePlayer(/*WINDOW*w, */level*l, counter*ticks) {
+short movePlayer(/*WINDOW*w, */level*l) {
 	short r = PACMAN_CONTINUE;
 	way_t moves = playerMoves(l->player.pos, l->map);
 	int8_t i = -1;
@@ -68,7 +68,7 @@ short movePlayer(/*WINDOW*w, */level*l, counter*ticks) {
 					r = PACMAN_GAMEOVER;
 				else
 					r = PACMAN_EATEN;
-				ticks->i = i;
+				l->i = i;
 				break;
 			case GH_SCARED:
 				l->player.score += PACMAN_GHOST_SCORE;
@@ -92,7 +92,7 @@ short movePlayer(/*WINDOW*w, */level*l, counter*ticks) {
 		} else if(isPowerPoint(l->map, l->player.pos.y, l->player.pos.x)) {
 			l->player.score += PACMAN_PPOINT_SCORE;
 			l->map[l->player.pos.y][l->player.pos.x].portal.y = MAP_EATENPPOINT;
-			beginPowerPoint(l, ticks);
+			beginPowerPoint(l);
 			if(mapIsEmpty(l->map))
 				r = PACMAN_WIN;
 		} else if(isPortal(l->map, l->player.pos.y, l->player.pos.x)) {

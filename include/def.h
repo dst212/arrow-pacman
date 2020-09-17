@@ -156,21 +156,23 @@ typedef struct {
 } levelStatus;
 
 typedef struct {
+	short lives;
+	short powerticks;
+} level_bak; //backup struct for level
+
+typedef struct {
 	map_t map[MAP_HEIGHT][MAP_WIDTH];
 	player_t player;
 	ghost_t ghost[LVL_MAX_GHOSTS];
 	int8_t ghosts;		//number of ghosts
 	short powerticks;	//power-point duration in ticks
+	//fields which are not saved when a new level is created they'll change during the game
+	int delay;			//delay between "frames"
+	int levels;			//
+	int ticks;			//count of frames, one tick is one frame
+	int checkpoint;		//checkpoint for powered points
+	level_bak initial;	//initial (backup) values
+	int8_t i;			//the ghost which has eaten the pacman
 } level;
-
-typedef struct {
-	int levels;					//levels count
-	int count;					//game's ticks count
-	int checkpoint;				//checkpoint for power points
-	short delay;				//delay between "frames"
-	int8_t i;					//the ghost which has eaten the pacman
-	short initial_lives;		//
-	short initial_powerticks;	//
-} counter; //initially was a counter, but I added some stuff and it's no more just a counter structure
 
 //END

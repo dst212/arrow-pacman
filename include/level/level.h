@@ -36,65 +36,65 @@ void printLevel(WINDOW*w, const level*l, const short starty, const short startx,
 	}
 }
 
-void levelUp(level*l, counter*ticks) {
+void levelUp(level*l) {
 	int8_t i;
-	ticks->levels++;
+	l->levels++;
 	resetMap(l->map);
 	resetPlayer(l->player);
 	for(i = 0 ; i < l->ghosts; i++)
 		resetGhost(l->ghost[i]);
-	if(ticks->delay > 50)
-		ticks->delay -= 10;
+	if(l->delay > 50)
+		l->delay -= 10;
 	if(l->powerticks > 20)
 	 	l->powerticks -= 5;
 }
 
-void initLevel(level*l, counter*ticks) {
+void initLevel(level*l) {
 	//levels count
-	ticks->levels = 0;
+	l->levels = 1;
 	//game's ticks count
-	ticks->count = 0;
+	l->ticks = 0;
 	//needed to keep track of when the last power point was caught
-	ticks->checkpoint = -1;
+	l->checkpoint = -1;
 	//framerate in ms / f (frame delay): 5 fps (initial)
-	ticks->delay = 1000 / 5;
+	l->delay = 1000 / 5;
 	//save variable fields
-	ticks->initial_lives = l->player.lives;
-	ticks->initial_powerticks = l->powerticks;
+	l->initial.lives = l->player.lives;
+	l->initial.powerticks = l->powerticks;
 	//*philosophy mode on* the player starts it's first life *philosophy mode off*
 	l->player.lives--;
-	ticks->levels++;
 }
 
-void restartLevel(level*l, counter*ticks) {
+void restartLevel(level*l) {
 	int8_t i;
-	ticks->levels = 0;
-	ticks->count = 0;
-	ticks->checkpoint = -1;
+	l->levels = 0;
+	l->ticks = 0;
+	l->checkpoint = -1;
 	resetMap(l->map);
 	resetPlayer(l->player);
-	l->player.lives = ticks->initial_lives;
+	l->player.lives = l->initial.lives;
 	for(i = 0 ; i < l->ghosts; i++)
 		resetGhost(l->ghost[i]);
-	l->powerticks = ticks->initial_powerticks;
+	l->powerticks = l->initial.powerticks;
 	l->player.score = 0;
 }
 
-void beginPowerPoint(level*l, counter*ticks) {
+void beginPowerPoint(level*l) {
 	int8_t i;
 	for(i = 0; i < l->ghosts; i++) {
 		if(l->ghost[i].flag != GH_EATEN)
 			l->ghost[i].flag = GH_SCARED;
 	}
-	ticks->checkpoint = ticks->count;
+	l->checkpoint = l->ticks;
 }
 
-void endPowerPoint(level*l, counter*ticks) {
+void endPowerPoint(level*l) {
 	int8_t i;
 	for(i = 0; i < l->ghosts; i++) {
 		if(l->ghost[i].flag == GH_SCARED)
 			l->ghost[i].flag = GH_NORMAL;
 	}
-	ticks->checkpoint = -1;
+	l->checkpoint = -1;
 }
+
 //END

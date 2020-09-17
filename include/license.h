@@ -1,4 +1,8 @@
-
+/*
+ * Arrow Pacman
+ * Copyright (C) 2020 Emanuele De Stefani <212dst212@gmail.com>
+ * Full warranty notice in main.c at root directory.
+ */
 
 //license disclaimer
 

@@ -25,14 +25,19 @@ int pacmanCountDown(WINDOW*w) {
 void refreshBar(WINDOW*w, const level*l) {
 	int8_t i;
 	char score[10];
-	num2str(l->player.score, score, 10);
 	ncfillcol(w, 0, WIN_WIDTH - 1, WIN_HEIGHT, ' ', COLOR_WHITE + 8);
-	if(!is_nodelay(w)) mvwaddch(w, 0, WIN_WIDTH - 1, 'P');
+	if(!is_nodelay(w)) mvwaddch(w, 0, WIN_WIDTH - 1, 'P'); //if the game was paused, show that
+	//print the live
 	setcolor(w, COLOR_RED + 8);
 	for(i = 0; i < l->player.lives; i++)
 		mvwaddwstr(w, 1 + i, WIN_WIDTH - 1, PACMAN_HEART);
+	//print the level
 	setcolor(w, COLOR_WHITE + 8);
-	mvncprintv(w, WIN_HEIGHT - 1 - strlen(score), WIN_WIDTH - 1, score);
+	num2str(l->levels, score, 10);
+	mvncprintv(w, WIN_HEIGHT - 1 - strlen(score) - 1, WIN_WIDTH - 1, "-");
+	ncprintv(w, score);
+	//print the score
+	mvncprintv(w, WIN_HEIGHT - 1 - strlen(score) - strlen(num2str(l->player.score, score, 10)) - 1, WIN_WIDTH - 1, score);
 }
 
 void pacmanKeys(WINDOW*w, level*l, int ch) {
@@ -68,7 +73,6 @@ void startPacMan(void) {
 	levelStatus reason;
 	level pacman;
 	uint16_t*bitmap[LVL_MAX_GHOSTS]; //ghosts' routes
-	counter ticks;
 	short i, gameStatus = PACMAN_CONTINUE;
 	int ch;
 	bool playAgain = false;
@@ -89,8 +93,8 @@ void startPacMan(void) {
 		curs_set(0);
 		do { //init game
 			nodelay(w, true);
+			initLevel(&pacman);
 			refreshBar(w, &pacman);
-			initLevel(&pacman, &ticks);
 			ch = pacmanCountDown(w);
 			do { //game cycle
 				//perform action based on key press
@@ -99,16 +103,16 @@ void startPacMan(void) {
 				//print all to the output, refresh and wait
 				unprintSprites(w, &pacman);
 				for(i = 0; i < pacman.ghosts; i++)
-					if(pacman.ghost[i].flag != GH_SCARED || ticks.count % 2 == 0) {
-						moveGhost(&pacman, i, bitmap[i], &ticks);
+					if(pacman.ghost[i].flag != GH_SCARED || pacman.ticks % 2 == 0) {
+						moveGhost(&pacman, i, bitmap[i]);
 						printGhost(w, &pacman, i);
 					} else
 						reprintGhost(w, &pacman, i, (pacman.map[pacman.ghost[i].pos.y][pacman.ghost[i].pos.x].color < 128 /*dark background*/) ? COLOR_WHITE + 8 : COLOR_BLACK);
-				gameStatus = movePlayer(&pacman, &ticks);
+				gameStatus = movePlayer(&pacman);
 				printPlayer(w, &pacman);
 				refreshBar(w, &pacman);
 				wrefresh(w);
-				msleep(ticks.delay / 2);
+				msleep(pacman.delay / 2);
 				//check game's status
 				switch(gameStatus) {
 					case PACMAN_CONTINUE:
@@ -116,15 +120,15 @@ void startPacMan(void) {
 						for(i = 0; i < pacman.ghosts; i++) {
 								if(pacman.ghost[i].flag == GH_EATEN) {
 								printMapCell(w, &pacman, pacman.ghost[i].pos.y, pacman.ghost[i].pos.x);
-								moveGhost(&pacman, i, bitmap[i], &ticks);
+								moveGhost(&pacman, i, bitmap[i]);
 								printGhost(w, &pacman, i);
 							}
 						}
 						wrefresh(w);
-						msleep(ticks.delay / 2);
-						ticks.count++;
-						if(ticks.checkpoint != -1 && ticks.count - ticks.checkpoint >= pacman.powerticks)
-							endPowerPoint(&pacman, &ticks);
+						msleep(pacman.delay / 2);
+						pacman.ticks++;
+						if(pacman.checkpoint != -1 && pacman.ticks - pacman.checkpoint >= pacman.powerticks)
+							endPowerPoint(&pacman);
 						break;
 					case PACMAN_GAMEOVER:
 					case PACMAN_EATEN:
@@ -134,8 +138,8 @@ void startPacMan(void) {
 						}
 						playerDeath(w, &pacman);
 						strcpy(msg, "");
-						strcat(strcat(strcat(msg, "You got caught by "), pacman.ghost[ticks.i].name), "!");
-						ncpopup_info(NC_POPUP_CENTER(w, 1, 30), revcolor(pacman.ghost[ticks.i].color[GH_NORMAL]), msg, "OK");
+						strcat(strcat(strcat(msg, "You got caught by "), pacman.ghost[pacman.i].name), "!");
+						ncpopup_info(NC_POPUP_CENTER(w, 1, 30), revcolor(pacman.ghost[pacman.i].color[GH_NORMAL]), msg, "OK");
 						redrawwin(w);
 						if(gameStatus != PACMAN_GAMEOVER) {
 							printMapCell(w, &pacman, pacman.player.pos.y, pacman.player.pos.x);
@@ -147,7 +151,7 @@ void startPacMan(void) {
 						}
 						break;
 					case PACMAN_WIN:
-						levelUp(&pacman, &ticks);
+						levelUp(&pacman);
 						printLevel(w, &pacman, 0, 0, MAP_HEIGHT, MAP_WIDTH);
 						pacmanCountDown(w);
 						break;
@@ -157,7 +161,7 @@ void startPacMan(void) {
 			wrefresh(w);
 			wmove(w, WIN_HEIGHT - 1, 0);
 			if((playAgain = ncpopup_bool(NC_POPUP_CENTER(w, 1, 16), revcolor(DEFAULT_COLOR), "  Play again?  ", NC_POPUP_YES, NC_POPUP_NO))) {
-				restartLevel(&pacman, &ticks);
+				restartLevel(&pacman);
 				printLevel(w, &pacman, 0, 0, MAP_HEIGHT, MAP_WIDTH);
 				redrawwin(w);
 				wrefresh(w);
