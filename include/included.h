@@ -9,21 +9,17 @@
 #define _XOPEN_SOURCE_EXTENDED 1 //needed for ncurses wide char to work
 
 //cstuff headers
-// #include "../../cstuff/ncstuff.h"
-// #include "../../cstuff/chstuff.h"
-// #include "../../cstuff/mathstuff.h"
 #include <ncstuff.h>
 #include <chstuff.h>
-#include <mathstuff.h>
+// #include <miscstuff.h> //in ncstuff.h
 
 #include <time.h>		//time() function
-// #include <stdlib.h>	//in mathstuff.h
+// #include <stdlib.h>	//in miscstuff.h
+// #include <math.h>	//in miscstuff.h
 // #include <ncurses.h>	//in ncstuff.h
 // #include <string.h>	//in strstuff.h, in ncstuff.h
 // #include <locale.h>	//in chstuff.h
 // #include <wchar.h>	//in chstuff.h
-// #include <math.h>	//in mathstuff.h
-//#include <unistd.h>	//usleep() function, in ncstuff.h
 
 #include <stdint.h>		//int types
 #include <stdbool.h>	//bool type
@@ -41,11 +37,6 @@
 #include "level/status.h"			//status of a level, if it's bugged or out of standard values
 #include "level/levelfiles.h"		//operations on levels' files
 
-/* To compile the code for the server-side version, add
-*	-D _PACMAN_COMPILE_FOR_SERVER
-* to the compiler options. The server version doesn't include the level editor,
-* to avoid random users edit server's levels.
-*/
 #ifndef _PACMAN_COMPILE_FOR_SERVER
 #include "level/editor/editor.h"	//level editor, allows to create custom levels
 #endif
