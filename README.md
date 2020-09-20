@@ -114,6 +114,12 @@ When all the points are eaten, **the Pacman levels up**, the tick value is decre
 
 The game is over when you lose all your lives.
 
+Commands:
+
+- `↑ ← ↓ →`: move the pacman around;
+
+- `p`: pause the game.
+
 ## Level Editor
 
 Arrow Pacman provides a **level editor**, so as everyone can create custom levels.
