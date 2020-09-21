@@ -35,7 +35,7 @@ cstuff_dep = cstuff_proj.get_variable('cstuff_dep')
 # Dependencies
 deps = [
 	cc.find_library('m'),
-	cc.find_library('ncurses'),
+	cc.find_library('ncursesw'),
 	cstuff_dep
 ]
 
