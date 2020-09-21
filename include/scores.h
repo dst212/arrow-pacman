@@ -1,7 +1,7 @@
 /*
  * Arrow Pacman
  * Copyright (C) 2020 Emanuele De Stefani <212dst212@gmail.com>
- * Full warranty notice in main.c at root directory.
+ * Full warranty notice in /src/main.c, full license in /LICENSE
  */
 
 //scores functions, not implemented yet
@@ -11,8 +11,8 @@ typedef struct {
 	int score;
 } score;
 
-void listScores(void){
-	;
-}
+extern void listScores(void);
+
+#include "../src/scores.c"
 
 //END

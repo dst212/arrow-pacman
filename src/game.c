@@ -1,10 +1,8 @@
 /*
  * Arrow Pacman
  * Copyright (C) 2020 Emanuele De Stefani <212dst212@gmail.com>
- * Full warranty notice in main.c at root directory.
+ * Full warranty notice in /src/main.c, full license in /LICENSE
  */
-
-//main game functions, the game "engine"
 
 int pacmanCountDown(WINDOW*w) {
 	#define WIN_MIDDLE (WIN_HEIGHT - 1) / 2
@@ -22,7 +20,7 @@ int pacmanCountDown(WINDOW*w) {
 	return ncignoreinput(w);
 }
 
-void refreshBar(WINDOW*w, const level*l) {
+void refreshBar(WINDOW*w, const Level*l) {
 	int8_t i;
 	char score[10];
 	ncfillcol(w, 0, WIN_WIDTH - 1, WIN_HEIGHT, ' ', COLOR_WHITE + 8);
@@ -40,7 +38,7 @@ void refreshBar(WINDOW*w, const level*l) {
 	mvncprintv(w, WIN_HEIGHT - 1 - strlen(score) - strlen(num2str(l->player.score, score, 10)) - 1, WIN_WIDTH - 1, score);
 }
 
-void pacmanKeys(WINDOW*w, level*l, int ch) {
+void pacmanKeys(WINDOW*w, Level*l, int ch) {
 	switch(ch) {
 		case ERR:
 			break;
@@ -70,8 +68,8 @@ void pacmanKeys(WINDOW*w, level*l, int ch) {
 void startPacMan(void) {
 	char levelName[MAX_STR_SIZE + 1] = "";
 	char msg[MAX_STR_SIZE + GH_NAME_SIZE + 1] = "";
-	levelStatus reason;
-	level pacman;
+	Level_status reason;
+	Level pacman;
 	uint16_t*bitmap[LVL_MAX_GHOSTS]; //ghosts' routes
 	short i, gameStatus = PACMAN_CONTINUE;
 	int ch;
@@ -174,51 +172,6 @@ void startPacMan(void) {
 		lvlError(stdscr, reason);
 	}
 	delwin(w);
-}
-
-void mainMenu(WINDOW*mainwin) {
-	#define PACMAN_PLAY 0
-	#ifndef _PACMAN_COMPILE_FOR_SERVER
-		#define PACMAN_LEVEL_EDITOR PACMAN_PLAY + 1
-	#else
-		#define PACMAN_LEVEL_EDITOR 0
-	#endif
-	#define PACMAN_SCORES PACMAN_LEVEL_EDITOR + 1
-	#define PACMAN_ABOUT PACMAN_SCORES + 1
-	#define PACMAN_QUIT PACMAN_ABOUT + 1
-
-	int defColor = DEFAULT_COLOR, choice;
-	const char*menu[] = {
-		"* Play",
-		#ifndef _PACMAN_COMPILE_FOR_SERVER
-		"* Editor",
-		#endif
-		"* Scores",
-		"* About",
-		"* Quit"
-	};
-	do{
-		pacmanWelcome(mainwin, 0, 0, defColor);
-		waddwstr(mainwin, L"Use ↓↑ to move and ENTER to select.\n\n");
-		wrefresh(mainwin);
-		choice = ncmenu(getcury(mainwin), getcurx(mainwin) + 1, sizeof(menu) / sizeof(menu[0]), 15, menu, defColor, revcolor(defColor));
-		switch(choice) {
-			case PACMAN_PLAY:
-				startPacMan();
-				break;
-			#ifndef _PACMAN_COMPILE_FOR_SERVER
-			case PACMAN_LEVEL_EDITOR:
-				levelEditor();
-				break;
-			#endif
-			case PACMAN_SCORES:
-				listScores();
-				break;
-			case PACMAN_ABOUT:
-				printLicense();
-		}
-		wclear(mainwin);
-	} while(choice != PACMAN_QUIT);
 }
 
 //END

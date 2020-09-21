@@ -4,11 +4,8 @@
  * Full warranty notice in /src/main.c, full license in /LICENSE
  */
 
-//
-
-void levelEditGhost(WINDOW*, Level*, const int8_t);
-void levelEditPlayer(WINDOW*, Level*);
-
-// #include "../../../src/level/editor/editsprites.c"
+void listScores(void){
+	;
+}
 
 //END

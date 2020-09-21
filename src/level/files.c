@@ -1,13 +1,13 @@
 /*
  * Arrow Pacman
  * Copyright (C) 2020 Emanuele De Stefani <212dst212@gmail.com>
- * Full warranty notice in main.c at root directory.
+ * Full warranty notice in /src/main.c, full license in /LICENSE
  */
 
 //functions to write/read/check level files
 
-levelStatus loadLevel(WINDOW*w, const char*filename, level*l, bool autoFix) {
-	levelStatus s;
+Level_status loadLevel(WINDOW*w, const char*filename, Level*l, const bool autoFix) {
+	Level_status s;
 	char lvlFormat[LVL_FORMAT_SIZE] = "", levelsPath[MAX_STR_SIZE*2 + 1] = S_LEVELSDIR;
 	FILE*lvlFile = NULL;
 	s.status = LVL_OK;
@@ -22,14 +22,14 @@ levelStatus loadLevel(WINDOW*w, const char*filename, level*l, bool autoFix) {
 		else if(strncmp(lvlFormat, LVL_FORMAT, LVL_FORMAT_SIZE) != 0)
 			s.status = LVL_OLD; //different format's check
 		else if(
-			!fread(l->map,				sizeof(map_t),			MAP_HEIGHT * MAP_WIDTH,	lvlFile) ||
-			!fread(&(l->player),		sizeof(player_t),		1,						lvlFile) ||
-			!fread(l->ghost,			sizeof(ghost_t),		LVL_MAX_GHOSTS,			lvlFile) ||
+			!fread(l->map,				sizeof(Map),			MAP_HEIGHT * MAP_WIDTH,	lvlFile) ||
+			!fread(&(l->player),		sizeof(Player),		1,						lvlFile) ||
+			!fread(l->ghost,			sizeof(Ghost),		LVL_MAX_GHOSTS,			lvlFile) ||
 			!fread(&(l->ghosts),		sizeof(l->ghosts),		1,						lvlFile) ||
 			!fread(&(l->powerticks),	sizeof(l->powerticks),	1,						lvlFile)
 		)
 			s.status = LVL_INVALID; //the file was corrupted or wrong formatted
-		// else if(!fread(l, sizeof(level), 1, lvlFile))
+		// else if(!fread(l, sizeof(Level), 1, lvlFile))
 			// 	s.status = LVL_INVALID; //the file was corrupted or wrong formatted
 		else if(
 			(s = checkMap(l->map, autoFix)).status == LVL_OK &&
@@ -44,7 +44,7 @@ levelStatus loadLevel(WINDOW*w, const char*filename, level*l, bool autoFix) {
 	return s;
 }
 
-bool writeLevel(const char*filename, const level*l) {
+bool writeLevel(const char*filename, const Level*l) {
 	bool flag = true;
 	FILE*lvlFile = NULL;
 	const char*lvlFormat = LVL_FORMAT;
@@ -54,9 +54,9 @@ bool writeLevel(const char*filename, const level*l) {
 	if(lvlFile) {
 		if(
 			!fwrite(lvlFormat, sizeof(char), LVL_FORMAT_SIZE, lvlFile) ||
-			!fwrite(l->map,				sizeof(map_t),			MAP_HEIGHT * MAP_WIDTH,	lvlFile) ||
-			!fwrite(&(l->player),		sizeof(player_t),		1,						lvlFile) ||
-			!fwrite(l->ghost,			sizeof(ghost_t),		LVL_MAX_GHOSTS,			lvlFile) ||
+			!fwrite(l->map,				sizeof(Map),			MAP_HEIGHT * MAP_WIDTH,	lvlFile) ||
+			!fwrite(&(l->player),		sizeof(Player),		1,						lvlFile) ||
+			!fwrite(l->ghost,			sizeof(Ghost),		LVL_MAX_GHOSTS,			lvlFile) ||
 			!fwrite(&(l->ghosts),		sizeof(l->ghosts),		1,						lvlFile) ||
 			!fwrite(&(l->powerticks),	sizeof(l->powerticks),	1,						lvlFile)
 		) flag = false;

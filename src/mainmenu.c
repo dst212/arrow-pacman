@@ -1,16 +1,14 @@
 /*
  * Arrow Pacman
  * Copyright (C) 2020 Emanuele De Stefani <212dst212@gmail.com>
- * Full warranty notice in main.c at root directory.
+ * Full warranty notice in /src/main.c, full license in /LICENSE
  */
-
-//license disclaimer
 
 void pacmanWelcome(WINDOW*w, const short y, const short x, const short defColor) {
 	mvncprint(w, y, x, "@P" _PACMAN_NAME " @0E" _PACMAN_VERSION "@P by @0A" _PACMAN_AUTHOR "@P\n", defColor, defColor, defColor);
 }
 
-void printLicense() {
+void printLicense(void) {
 	setbgcolor(stdscr, DEFAULT_COLOR);
 	clear();
 	redrawwin(stdscr);
@@ -38,6 +36,51 @@ void printLicense() {
 	ncpause(stdscr, "\nPress any key to continue.");
 	clear();
 
+}
+
+void mainMenu(WINDOW*mainwin) {
+	#define PACMAN_PLAY 0
+	#ifndef _PACMAN_COMPILE_FOR_SERVER
+		#define PACMAN_LEVEL_EDITOR PACMAN_PLAY + 1
+	#else
+		#define PACMAN_LEVEL_EDITOR 0
+	#endif
+	#define PACMAN_SCORES PACMAN_LEVEL_EDITOR + 1
+	#define PACMAN_ABOUT PACMAN_SCORES + 1
+	#define PACMAN_QUIT PACMAN_ABOUT + 1
+
+	int defColor = DEFAULT_COLOR, choice;
+	const char*menu[] = {
+		"* Play",
+		#ifndef _PACMAN_COMPILE_FOR_SERVER
+		"* Editor",
+		#endif
+		"* Scores",
+		"* About",
+		"* Quit"
+	};
+	do{
+		pacmanWelcome(mainwin, 0, 0, defColor);
+		waddwstr(mainwin, L"Use ↓↑ to move and ENTER to select.\n\n");
+		wrefresh(mainwin);
+		choice = ncmenu(getcury(mainwin), getcurx(mainwin) + 1, sizeof(menu) / sizeof(menu[0]), 15, menu, defColor, revcolor(defColor));
+		switch(choice) {
+			case PACMAN_PLAY:
+				startPacMan();
+				break;
+			#ifndef _PACMAN_COMPILE_FOR_SERVER
+			case PACMAN_LEVEL_EDITOR:
+				levelEditor();
+				break;
+			#endif
+			case PACMAN_SCORES:
+				listScores();
+				break;
+			case PACMAN_ABOUT:
+				printLicense();
+		}
+		wclear(mainwin);
+	} while(choice != PACMAN_QUIT);
 }
 
 //END

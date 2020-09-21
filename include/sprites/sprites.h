@@ -13,50 +13,11 @@
 * operation.
 */
 
-int8_t ghostSpawn(const level*l, const short y, const short x) {
-	int i;
-	for(i = 0; i < l->ghosts; i++)
-		if(l->ghost[i].spawn.x == x && l->ghost[i].spawn.y == y)
-			return i;
-	return -1;
-}
-int8_t ghostPos(const level*l, const short y, const short x) {
-	int i;
-	for(i = 0; i < l->ghosts; i++)
-		if(l->ghost[i].pos.x == x && l->ghost[i].pos.y == y)
-			return i;
-	return -1;
-}
-int8_t ghostHit(const level*l, const short y, const short x, const way_t way) {
-	int i;
-	for(i = 0; i < l->ghosts; i++)
-		if(
-			turnAround(way) == l->ghost[i].way && (
-				(l->ghost[i].pos.x == x - 1 && l->ghost[i].pos.y == y) ||
-				(l->ghost[i].pos.x == x + 1 && l->ghost[i].pos.y == y) ||
-				(l->ghost[i].pos.x == x && l->ghost[i].pos.y == y - 1) ||
-				(l->ghost[i].pos.x == x && l->ghost[i].pos.y == y + 1)
-			)
-		)	return i;
-	return -1;
-}
+extern int8_t ghostSpawn(const Level*, const short, const short);
+extern int8_t ghostPos(const Level*, const short, const short);
+extern int8_t ghostHit(const Level*, const short, const short, const Way);
 
-#include "player.h"			//player-related stuff
-#include "ghost.h"			//ghosts-related stuff
-
-void printSprites(WINDOW*w, level*l) {
-	int8_t i;
-	for(i = 0; i < l->ghosts; i++)
-		printGhost(w, l, i);
-	printPlayer(w, l);
-}
-void unprintSprites(WINDOW*w, level*l) {
-	int8_t i;
-	for(i = 0; i < l->ghosts; i++)
-		printMapCell(w, l, l->ghost[i].pos.y, l->ghost[i].pos.x);
-	printMapCell(w, l, l->player.pos.y, l->player.pos.x);
-}
-
+extern void printSprites(WINDOW*, const Level*);
 #define isSpawn(l, i, j) (ghostSpawn(l, i, j) != -1 || isPlayerSpawn(l, i, j))
 
 //END

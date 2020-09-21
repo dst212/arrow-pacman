@@ -26,7 +26,7 @@
 #define WIN_HEIGHT 24
 #define WIN_WIDTH 80
 
-#include "include/included.h"
+#include "../include/main.h"
 
 int main(void) {
 	WINDOW *mainwin;

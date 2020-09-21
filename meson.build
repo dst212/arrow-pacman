@@ -39,4 +39,4 @@ deps = [
 	cstuff_dep
 ]
 
-executable('arrow-pacman', 'main.c', dependencies: deps)
+executable('arrow-pacman', 'src/main.c', dependencies: deps)

@@ -1,23 +1,23 @@
 /*
  * Arrow Pacman
  * Copyright (C) 2020 Emanuele De Stefani <212dst212@gmail.com>
- * Full warranty notice in main.c at root directory.
+ * Full warranty notice in /src/main.c, full license in /LICENSE
  */
 
-//defines, typedefs and some essential functions I didn't know where to put
+//defines, typedefs and enumerations
 
 #define DEFAULT_COLOR		0x0B	//black background and yellow foreground
 #define DEFAULT_COLOR_ERROR	0x09	//black background and red foreground
 
 #define MAX_STR_SIZE 32 //add + 1 to declaration, to leave space for '\0'
-#define PACMAN_FILE_CHARS "AZaz09\r .,-+_!'"
+#define PACMAN_FILE_CHARS "AZaz09\r .,-+_!'" //allowed characters to be used in a file name
 
 //MAP
 
 typedef struct {
 	int16_t x;
 	int16_t y;
-} coord;
+} Coord;
 
 #define isSamePos(c1, c2) ((c1).x == (c2).x && (c1).y == (c2).y)
 
@@ -27,70 +27,21 @@ typedef struct {
 typedef struct {
 	wchar_t wall; //appearance
 	uint8_t color;
-	coord portal; //coordinates which the map's cell leads to
-} map_t;
+	Coord portal; //coordinates which the map's cell leads to
+} Map;
 
 //SPRITES
 
-#define WEST	0b0001	//left
-#define NORTH	0b0010	//up
-#define EAST	0b0100	//right
-#define SOUTH	0b1000	//down
+enum Way_e {
+	WEST	= 0b0001,	//left
+	NORTH	= 0b0010,	//up
+	EAST	= 0b0100,	//right
+	SOUTH	= 0b1000	//down
+};
 
 #define INDEX_WAY(way) ( (way) ? ((int)log2((float)way)) : 0 )
 
-typedef uint8_t way_t;
-
-#define turnAround(way)	((way & 0b1100) ? (way) >> 2 : (way) << 2)
-#define turnLeft(way)	((way & 0b0001) ? (way) << 3 : (way) >> 1)
-#define turnRight(way)	((way & 0b1000) ? (way) >> 3 : (way) << 1)
-#define shiftSprite(s, way) do { \
-	switch(way) { \
-		case WEST: \
-			(s).pos.x--; \
-			break; \
-		case EAST: \
-			(s).pos.x++; \
-			break; \
-		case NORTH: \
-			(s).pos.y--; \
-			break; \
-		case SOUTH: \
-			(s).pos.y++; \
-			break; \
-	} \
-} while(0);
-
-way_t randomMove(way_t moves, way_t way) {
-	//for each of these if, the sprite MIGHT go back, but it won't until it's the last choice
-	way_t left = turnLeft(way), right = turnRight(way);
-	if(moves & way) {
-		if(moves & left) {
-			if(moves & right) { //it can go on, turn left or turn right
-				way = randomChoice(3, way, left, right);
-			} else { //it can go on or turn left
-				way = randomChoice(2, way, left);
-			}
-		} else if(moves & right) { //it can go on or turn right
-			way = randomChoice(2, way, right);
-		}/* else { //it can only go on
-			way = way;
-		}*/
-	} else {
-		if(moves & left) {
-			if(moves & right) { //it can turn left or turn right
-				way = randomChoice(2, left, right);
-			} else { //it can only turn left
-				way = left;
-			}
-		} else if(moves & right) { //it can only turn right
-			way = right;
-		} else { //it can only go back
-			way = turnAround(way);
-		}
-	}
-	return way;
-}
+typedef uint8_t Way;
 
 //PLAYER
 
@@ -99,25 +50,27 @@ typedef struct {
 	wchar_t s[4];			//appearance (left (0), up (1), right (2), down (3))
 	uint8_t color;			//
 	wchar_t deathanim[4];	//death's animation
-	coord spawn;			//spawn coordinates
+	Coord spawn;			//spawn coordinates
 	//can be changed:
-	coord pos;				//current coordinates
-	way_t way;				//current way
-	way_t nextway;			//queueing (in line) way
+	Coord pos;				//current coordinates
+	Way way;				//current way
+	Way nextway;			//queueing (in line) way
 	int8_t lives;			//
 	uint32_t score;			//
-} player_t;
+} Player;
 
 //GHOSTS
 
-#define GH_NORMAL		0
-#define GH_SCARED		1
-#define GH_EATEN		2
-#define GH_HUNTING		3	//the ghost found the pacman and is trying to reach it
-#define GH_STATUSES		4
-#define GH_NAME_SIZE	16
+enum Ghost_e {
+	GH_NORMAL	= 0,
+	GH_SCARED	= 1,
+	GH_EATEN	= 2,
+	GH_HUNTING	= 3,	//the ghost found the pacman and is trying to reach it
+	GH_STATUSES	= 4
+};
 
-#define LVL_MAX_GHOSTS 8
+#define GH_NAME_SIZE	16
+#define LVL_MAX_GHOSTS	8
 
 typedef struct {
 	//shouldn't be changed during the game:
@@ -141,29 +94,29 @@ typedef struct {
 	PacMan, the ghost will repeatedly bang its head on the wall.
 	*/
 	int8_t ticks;				//ticks after which the ghost can bypass walls
-	coord spawn;				//spawn coordinates
+	Coord spawn;				//spawn coordinates
 	//can be changed:
-	coord pos;					//current coordinates
-	way_t way;					//current way
+	Coord pos;					//current coordinates
+	Way way;					//current way
 	int8_t flag;				//ghost status: normal (0), scared (1), eaten (2)
-} ghost_t;
+} Ghost;
 
 //LEVEL
 
 typedef struct {
 	int status;
-	coord data; //where's the problem
-} levelStatus;
+	Coord data; //where's the problem
+} Level_status;
 
 typedef struct {
 	short lives;
 	short powerticks;
-} level_bak; //backup struct for level
+} Level_bak; //backup struct for level
 
 typedef struct {
-	map_t map[MAP_HEIGHT][MAP_WIDTH];
-	player_t player;
-	ghost_t ghost[LVL_MAX_GHOSTS];
+	Map map[MAP_HEIGHT][MAP_WIDTH];
+	Player player;
+	Ghost ghost[LVL_MAX_GHOSTS];
 	int8_t ghosts;		//number of ghosts
 	short powerticks;	//power-point duration in ticks
 	//fields which are not saved when a new level is created they'll change during the game
@@ -171,8 +124,8 @@ typedef struct {
 	int levels;			//
 	int ticks;			//count of frames, one tick is one frame
 	int checkpoint;		//checkpoint for powered points
-	level_bak initial;	//initial (backup) values
+	Level_bak initial;	//initial (backup) values
 	int8_t i;			//the ghost which has eaten the pacman
-} level;
+} Level;
 
 //END
