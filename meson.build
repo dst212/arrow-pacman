@@ -1,6 +1,6 @@
 # Meson build file for arrow-pacman
 
-project('arrow-pacman', 'c', version: '0.0a', license: 'gplv3', default_options: 'c_std=c11')
+project('arrow-pacman', 'c', version: '0.1a', license: 'gplv3', default_options: 'c_std=c11')
 
 cc = meson.get_compiler('c')
 
