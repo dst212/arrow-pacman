@@ -4,25 +4,15 @@
 
 Since the developer didn't like the `C` letter to be used as Pacman's sprite in a terminal, he decided to represent it with an arrow: `>` (*greater than*). That's how the game got its name.
 
-
-
 Beside this, the game is still in development, and full of lovely bugs right behind the corner. Literally every corner of the maze. And outside the game too.
-
-
 
 This  project is born just for fun, plus the developer's skills are really bad, so the code may be weird and ugly.
 
-
-
 Pull requests and suggestions are welcome, if you'd like to contribute.
-
-
 
 ## Installation
 
 Before obtaining the game, know that if you don't own a Unix-based system, it won't work, since ncurses works only there. If you are on Windows, consider using the [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10 "Install Windows Subsystem for Linux (WSL) on Windows 10") and switching to Linux as soon as possible.
-
-
 
 Ensure [Meson](https://mesonbuild.com/Quick-guide.html#installation-using-package-manager) is installed on your distro, along with [Ninja](https://ninja-build.org/):
 
@@ -64,8 +54,6 @@ mv server/arrow-pacman ./
 
 Data are stored into `./arrow-pacman-data`, where, you can find a folder containing a demo level named `demo`.
 
-
-
 ## Usage
 
 To run the game, in both cases:
@@ -77,8 +65,6 @@ To run the game, in both cases:
 A menu will show up. Choose `* Play` to start the game, then type `demo`. If you want to create a level, choose `* Editor`. If you wish to quit, choose `* Quit`.
 
 `* About` will show software's info and the license disclaimer.
-
-
 
 ## How to play
 
@@ -134,11 +120,7 @@ A level structure is made of:
 
 - the map properties.
 
-
-
 Note that if some changes are applied to the level-file structure in the source code, older level-files may not be compatible anymore, and it will be necessary to convert them (instructions will come along with the updates).
-
-
 
 Here is a list of possible commands:
 
@@ -178,8 +160,6 @@ When you change a wall's **appearance**, you can change cell using `↑ ↓` and
 
 The Pacman and the ghosts' menus also have an option to edit the **sprites' appearance**. Use `↑ ← ↓ →` to move, `ENTER` to change the appearance, and `c` to change color.
 
- 
-
 ---
 
 ## TODO list:
@@ -194,7 +174,7 @@ The Pacman and the ghosts' menus also have an option to edit the **sprites' appe
 
 - On color change in the sprite editor, the background turns black.
 
-
+- Ghost routes algorithm may not work with different maps.
 
 ## Notes
 
@@ -203,15 +183,3 @@ The program is licensed under GPLv3. You are free to modify/redistribute it unde
 You can share the level-files made with the editor where and as you like, they are not licensed.
 
 The program makes use of [cstuff libraries](https://github.com/dst212/cstuff), a shitty and simple library used for some basic functions mostly about ncurses and strings, licensed under the LGPLv3.
-
-
-
-
-
-
-
-
-
-
-
-
