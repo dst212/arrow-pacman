@@ -36,8 +36,6 @@
 #define isGenericWall(f, i, j)		(((f)[i][j]).portal.x == MAP_WALL && 0 <= ((f)[i][j]).portal.y && ((f)[i][j]).portal.y <= 1)
 #define isPortal(f, i, j)			(	(validCoord((f)[i][j].portal.y, (f)[i][j].portal.x)) && \
 										isCrossable((f), (f)[i][j].portal.y, (f)[i][j].portal.x))
-//only used on map load
-#define isValidWall(m)		((m).wall < ' ' || 255 <= (m).wall)
 
 extern bool mapIsEmpty(const Map[MAP_HEIGHT][MAP_WIDTH]);
 extern void printMapCell(WINDOW*, const Level*, const short, const short);
