@@ -40,7 +40,6 @@ short movePlayer(Level*l) {
 	short r = PACMAN_CONTINUE;
 	Way moves = playerMoves(l->player.pos, l->map);
 	int8_t i = -1;
-	// unprintPlayer(w, l);
 
 	//the player got caught or reached a ghost
 	if((i = playerGotCaught(l)) != -1) {
@@ -78,10 +77,9 @@ short movePlayer(Level*l) {
 			if(mapIsEmpty(l->map))
 				r = PACMAN_WIN;
 		} else if(isPortal(l->map, l->player.pos.y, l->player.pos.x)) {
-			teleport(l->player, l->map[l->player.pos.y][l->player.pos.x].portal.y, l->map[l->player.pos.y][l->player.pos.x].portal.x);
+			l->player.pos = l->map[l->player.pos.y][l->player.pos.x].portal;
 		}
 	}
-	// printPlayer(w, l);
 	return r;
 }
 

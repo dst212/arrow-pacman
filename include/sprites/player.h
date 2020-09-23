@@ -24,7 +24,6 @@ enum Pacman_scores_e {
 #define resetPlayer(s)			do { (s).pos = (s).spawn, (s).nextway = (s).way = WEST; } while(0);
 #define playerCanMove(f, y, x)	(validCoord(y, x) && (isCrossable(f, y, x) || isPortal(f, y, x)))
 #define isPlayerSpawn(l, i, j)	(i == (l)->player.spawn.y && j == (l)->player.spawn.x)
-#define teleport(p, i, j) 		do { (p).pos.y = (i), (p).pos.x = (j); } while(0);
 
 extern void printPlayer(WINDOW*, const Level*);
 extern void playerDeath(WINDOW*, const Level*);
